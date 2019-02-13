@@ -661,12 +661,9 @@ public:
                                                           camera.get_viewport());
 
         auto contour_landmarks = core::IndexedLandmarkCollection<LandmarkType>();
-        for (int i = 0; i < image_points_contour.size(); ++i) {
-            core::IndexedLandmark<LandmarkType> landmark;
-            landmark.coordinates = image_points_contour[i];
-            landmark.model_index = vertex_indices_contour[i];
-
-            contour_landmarks.emplace_back(std::move(landmark));
+        for (int i = 0; i < image_points_contour.size(); ++i)
+        {
+            contour_landmarks.emplace_back("", image_points_contour[i], vertex_indices_contour[i]);
         }
 
         return contour_landmarks;

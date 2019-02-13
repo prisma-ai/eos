@@ -45,11 +45,14 @@ struct Landmark
  * @brief Representation of a landmark with mesh index.
  */
 template <class LandmarkType>
-struct IndexedLandmark: Landmark<LandmarkType>
+struct IndexedLandmark : Landmark<LandmarkType>
 {
-    int model_index;  ///< Index of landmark in mesh
+    IndexedLandmark(const Landmark<LandmarkType>& landmark, int model_index)
+        : Landmark<LandmarkType>(landmark), model_index(model_index) {}
+    IndexedLandmark(const std::string& name, const LandmarkType& coordinates, int model_index)
+        : Landmark<LandmarkType>{name, coordinates}, model_index(model_index) {}
+    int model_index; ///< Index of landmark in mesh
 };
-
 
 /**
  * @brief A trivial collection of landmarks that belong together.
