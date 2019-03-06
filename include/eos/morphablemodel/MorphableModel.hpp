@@ -46,6 +46,7 @@
 #include <cstdint>
 #include <vector>
 #include <fstream>
+#include <strstream>
 #include <algorithm>
 #include <string>
 #include <unordered_map>
@@ -514,6 +515,36 @@ private:
 };
 
 /**
+ * Helper method to load a Morphable Model from istream.
+ * You can use it for example to read from istringstream, istrstream and ifstream.
+ *
+ * @param[in] data istream to read.
+ * @return The loaded Morphable Model.
+ */
+inline MorphableModel load_model(std::istream &data)
+{
+    MorphableModel model;
+
+    cereal::BinaryInputArchive input_archive(data);
+    input_archive(model);
+
+    return model;
+};
+
+/**
+ * Helper method to load a Morphable Model from char* buffer.
+ *
+ * @param[in] buffer pointer to buffer.
+ * @param[in] size size of buffer.
+ * @return The loaded Morphable Model.
+ */
+inline MorphableModel load_model(const char* buffer, size_t size)
+{
+    std::istrstream stream(buffer, size);
+    return load_model(stream);
+}
+
+/**
  * Helper method to load a Morphable Model from
  * a cereal::BinaryInputArchive from the harddisk.
  *
@@ -522,19 +553,14 @@ private:
  * @throw std::runtime_error When the file given in \c filename fails to be opened (most likely because the
  * file doesn't exist).
  */
-inline MorphableModel load_model(std::string filename)
+inline MorphableModel load_model(const std::string &filename)
 {
-    MorphableModel model;
-
     std::ifstream file(filename, std::ios::binary);
     if (!file)
     {
         throw std::runtime_error("Error opening given file: " + filename);
     }
-    cereal::BinaryInputArchive input_archive(file);
-    input_archive(model);
-
-    return model;
+    return load_model(file);
 };
 
 /**
